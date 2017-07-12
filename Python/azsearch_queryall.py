@@ -1,5 +1,5 @@
 """
-Python code to retrieve answers to all EY questions from Azure Search
+Python code to retrieve batch answers from Azure Search
 
 Run this script in the 'code' directory:
     python azsearch_queryall.py
