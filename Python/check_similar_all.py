@@ -1,5 +1,5 @@
 #
-# Compute similarities and check overlap between EY and MS answers
+# Compute similarities and check overlap between answers
 #
 import difflib
 import re, string
