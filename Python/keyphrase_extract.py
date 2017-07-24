@@ -1,11 +1,10 @@
 ###########################################################################################
 # Keyphrase extractor example for experimentation
 # Supports algoriths: RAKE, topic rank, single rank, TFIDF and KPMINER
-# Note: This script uses some modifications to PKE to support custom stopwords lists
-#       and optional no stemming. Install PKE from branch https://github.com/msolhab/pke
 # For more info about RAKE algorithm and implmentation, see https://github.com/aneesha/RAKE
 # Note: A copy of rake.py and SmartStoplist.txt stopwords list is included with this script
 # For more info about the PKE implementations, see https://github.com/boudinfl/pke
+# Note: Install PKE from the GitHub repo https://github.com/boudinfl/pke
 ###########################################################################################
 
 # Import base packages
