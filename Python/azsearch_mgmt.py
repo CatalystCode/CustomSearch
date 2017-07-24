@@ -1,5 +1,5 @@
 """
-Python code to upload data to Azure Search for the MLADS Bot.
+Python code to upload data to Azure Search for the Custom Search example.
 
 This script will upload all of the session information where
 each individual sesssion equates to a document in an index
@@ -11,7 +11,7 @@ This is NOT production level code. Please do not use it as such.
 You might have to pip install the imported modules here.
 
 Run this script in the 'code' directory:
-    python search_mgmt.py
+    python azsearch_mgmt.py
 
 See Azure Search REST API docs for more info:
     https://docs.microsoft.com/en-us/rest/api/searchservice/index
@@ -22,28 +22,98 @@ import requests
 import json
 import csv
 import datetime
+import pytz
 import calendar
 import os
 import pyexcel as pe
 
-
-# Index gets created
-#indexName = 'mh-eyfulltaxidxer'
-indexName = 'mh-eytaxidxer'
-
 # This is the service you've already created in Azure Portal
-serviceName = 'eyazuresearch2017'
+serviceName = 'your_azure_search_service_name'
 
-# Other globals
+# Index to be created
+indexName = 'name_of_index_to_create'
+
+# Set your service API key, either via an environment variable or enter it below
 #apiKey = os.getenv('SEARCH_KEY_DEV', '')
-apiKey = '8F36AE0F57D714CDDEC62EC79C6D5FF1'
-apiVersion = '2015-02-28-Preview'
+apiKey = 'your_azure_search_service_api_key'
+apiVersion = '2016-09-01'
 
-# Input file must be .xls (not .xlsx)
-#inputfile = os.path.join(os.getcwd(), './parsed/ms_parsed_h3_full_tax_guide_keywords.xlsx')
-inputfile = os.path.join(os.getcwd(), './parsed/ms_parsed_h3_tax_guide_keywords.xlsx')
+# Input parsed content Excel file, e.g., output of step #1 in
+# https://github.com/CatalystCode/CustomSearch/tree/master/JupyterNotebooks/1-content_extraction.ipynb
+inputfile = os.path.join(os.getcwd(), '../sample/parsed_content.xlsx')
 
-def getSampleDocumentObject():
+# Define fields mapping from Excel file column names to search index field names (except Index)
+# Change this mapping to match your content fields and rename output fields as desired
+# Search field names should match their definition in getIndexDefinition()
+fields_map = [ ('File'            , 'File'),
+               ('ChapterTitle'    , 'ChapterTitle'),
+               ('SectionTitle'    , 'SectionTitle'),
+               ('SubsectionTitle' , 'SubsectionTitle'),
+               ('SubsectionText'  , 'SubsectionText'),
+               ('Keywords'        , 'Keywords') ]
+
+# Fields: Index	File	ChapterTitle	SectionTitle	SubsectionTitle		SubsectionText	Keywords
+def getIndexDefinition():
+    return {
+        "name": indexName,  
+        "fields": [
+        {"name": "Index", "type": "Edm.String", "key": True, "retrievable": True, "searchable": False, "filterable": False, "sortable": True, "facetable": False},
+
+        {"name": "File", "type": "Edm.String", "retrievable": True, "searchable": False, "filterable": True, "sortable": True, "facetable": False},
+
+        {"name": "ChapterTitle", "type": "Edm.String", "retrievable": True, "searchable": True, "filterable": True, "sortable": True, "facetable": True},
+
+        {"name": "SectionTitle", "type": "Edm.String", "retrievable": True, "searchable": True, "filterable": True, "sortable": False, "facetable": True},
+
+        {"name": "SubsectionTitle", "type": "Edm.String", "retrievable": True, "searchable": True, "filterable": True, "sortable": True, "facetable": False},
+
+        {"name": "SubsectionText", "type": "Edm.String", "retrievable": True, "searchable": True, "filterable": False, "sortable": False, "facetable": False, "analyzer": "en.microsoft"},
+
+        {"name": "Keywords", "type": "Edm.String", "retrievable": True, "searchable": True, "filterable": False, "sortable": False, "facetable": False, "analyzer": "en.microsoft"}
+        ]
+    }
+
+def getServiceUrl():
+    return 'https://' + serviceName + '.search.windows.net'
+
+def getMethod(servicePath):
+    headers = {'Content-type': 'application/json', 'api-key': apiKey}
+    r = requests.get(getServiceUrl() + servicePath, headers=headers)
+    #print(r.text)
+    return r
+
+def postMethod(servicePath, body):
+    headers = {'Content-type': 'application/json', 'api-key': apiKey}
+    r = requests.post(getServiceUrl() + servicePath, headers=headers, data=body)
+    #print(r, r.text)
+    return r
+
+def createIndex():
+    indexDefinition = json.dumps(getIndexDefinition())  
+    servicePath = '/indexes/?api-version=%s' % apiVersion
+    r = postMethod(servicePath, indexDefinition)
+    #print r.text
+    if r.status_code == 201:
+       print('Index %s created' % indexName)   
+    else:
+       print('Failed to create index %s' % indexName)
+       exit(1)
+
+def deleteIndex():
+    servicePath = '/indexes/%s?api-version=%s&delete' % (indexName, apiVersion)
+    headers = {'Content-type': 'application/json', 'api-key': apiKey}
+    r = requests.delete(getServiceUrl() + servicePath, headers=headers)
+    #print(r.text)
+
+def getIndex():
+    servicePath = '/indexes/%s?api-version=%s' % (indexName, apiVersion)
+    r = getMethod(servicePath)
+    if r.status_code == 200:  
+       return True
+    else:
+       return False
+
+def getDocumentObject():   
     valarry = []
     cnt = 1
     records = pe.iget_records(file_name=inputfile)
@@ -51,23 +121,16 @@ def getSampleDocumentObject():
         outdict = {}
         outdict['@search.action'] = 'upload'
 
-        if (row['Title']):
-            outdict['Index']           = str(row['Index'])
-            outdict['File']            = row['File']
-            outdict['Chapter']         = row['Chapter']
-            outdict['Title']           = row['Title']
-            outdict['SectionTitle']    = row['SectionTitle']
-            outdict['SubsectionTitle'] = row['SubsectionTitle']
-            outdict['Source']          = row['Source']
-            outdict['FeatureType']     = row['FeatureType']
-            outdict['ParaText']        = row['ParaText']
-            outdict['Keywords']        = row['Keywords']
+        if (row[fields_map[0][0]]):
+            outdict['Index'] = str(row['Index'])
+            for (in_fld, out_fld) in fields_map:
+                outdict[out_fld]  = row[in_fld]
         valarry.append(outdict)
         cnt+=1
 
     return {'value' : valarry}
 
-def getSampleDocumentObjectByChunk(start, end):
+def getDocumentObjectByChunk(start, end):   
     valarry = []
     cnt = 1
     records = pe.iget_records(file_name=inputfile)
@@ -76,330 +139,94 @@ def getSampleDocumentObjectByChunk(start, end):
             outdict = {}
             outdict['@search.action'] = 'upload'
 
-            if (row['Title']):
-                outdict['Index']           = str(row['Index'])
-                outdict['File']            = row['File']
-                outdict['Chapter']         = row['Chapter']
-                outdict['Title']           = row['Title']
-                outdict['SectionTitle']    = row['SectionTitle']
-                outdict['SubsectionTitle'] = row['SubsectionTitle']
-                outdict['Source']          = row['Source']
-                outdict['FeatureType']     = row['FeatureType']
-                outdict['ParaText']        = row['ParaText']
-                outdict['Keywords']        = row['Keywords']
+            if (row[fields_map[0][0]]):
+                outdict['Index'] = str(row['Index'])
+                for (in_fld, out_fld) in fields_map:
+                    outdict[out_fld]  = row[in_fld]
             valarry.append(outdict)
             cnt+=1
 
     return {'value' : valarry}
 
-# Fields: Index	File	Chapter	Title	SectionTitle	SubsectionTitle	Source	FeatureType	ParaText	Keywords
-def getSampleIndexDefinition():
-    return {
-    "name": indexName,
-    "fields":
-    [
-        {
-            "name": "Index",
-            "type": "Edm.String",
-            "searchable": False,
-            "filterable": False,
-            "retrievable": True,
-            "sortable": True,
-            "facetable": False,
-            "key": True,
-            "indexAnalyzer": None,
-            "searchAnalyzer": None,
-            "analyzer": None,
-            "synonymMaps": []
-        },
-        {
-            "name": "File",
-            "type": "Edm.String",
-            "searchable": False,
-            "filterable": True,
-            "retrievable": True,
-            "sortable": True,
-            "facetable": False,
-            "key": False,
-            "indexAnalyzer": None,
-            "searchAnalyzer": None,
-            "analyzer": None,
-            "synonymMaps": []
-        },
-        {
-            "name": "Chapter",
-            "type": "Edm.String",
-            "searchable": False,
-            "filterable": True,
-            "retrievable": True,
-            "sortable": True,
-            "facetable": False,
-            "key": False,
-            "indexAnalyzer": None,
-            "searchAnalyzer": None,
-            "analyzer": None,
-            "synonymMaps": []
-        },
-        {
-            "name": "Title",
-            "type": "Edm.String",
-            "searchable": True,
-            "filterable": True,
-            "retrievable": True,
-            "sortable": True,
-            "facetable": True,
-            "key": False,
-            "indexAnalyzer": None,
-            "searchAnalyzer": None,
-           "analyzer": None,
-            "synonymMaps": []
-        },
-        {
-            "name": "SectionTitle",
-            "type": "Edm.String",
-            "searchable": True,
-            "filterable": True,
-            "retrievable": True,
-            "sortable": False,
-            "facetable": True,
-            "key": False,
-            "indexAnalyzer": None,
-            "searchAnalyzer": None,
-            "analyzer": None,
-            "synonymMaps": []
-        },
-        {
-            "name": "SubsectionTitle",
-            "type": "Edm.String",
-            "searchable": True,
-            "filterable": True,
-            "retrievable": True,
-            "sortable": True,
-            "facetable": False,
-            "key": False,
-            "indexAnalyzer": None,
-            "searchAnalyzer": None,
-            "analyzer": None,
-            "synonymMaps": []
-        },
-        {
-            "name": "Source",
-            "type": "Edm.String",
-            "searchable": False,
-            "filterable": False,
-            "retrievable": True,
-            "sortable": True,
-            "facetable": True,
-            "key": False,
-            "indexAnalyzer": None,
-            "searchAnalyzer": None,
-            "analyzer": None,
-            "synonymMaps": []
-        },
-        {
-            "name": "FeatureType",
-            "type": "Edm.String",
-            "searchable": False,
-            "filterable": True,
-            "retrievable": True,
-            "sortable": True,
-            "facetable": True,
-            "key": False,
-            "indexAnalyzer": None,
-            "searchAnalyzer": None,
-            "analyzer": None,
-            "synonymMaps": []
-        },
-        {
-            "name": "ParaText",
-            "type": "Edm.String",
-            "searchable": True,
-            "filterable": False,
-            "retrievable": True,
-            "sortable": False,
-            "facetable": False,
-            "key": False,
-      "indexAnalyzer": "english_indexing_analyzer",
-      "searchAnalyzer": "english_search_analyzer",
-            "synonymMaps": []
-        },
-        {
-            "name": "Keywords",
-            "type": "Edm.String",
-            "searchable": True,
-            "filterable": False,
-            "retrievable": True,
-            "sortable": False,
-            "facetable": False,
-            "key": False,
-      "indexAnalyzer": "english_indexing_analyzer",
-      "searchAnalyzer": "english_search_analyzer",
-            "synonymMaps": []
-       }
-    ],
-  "scoringProfiles": [
-    {
-      "name": "boostexperiment",
-      "text": {
-
-        "weights": {
-
-          "Title": 1,
-
-          "Keywords": 1
-        }
-      }
-    }
-],
-
-
-  "analyzers": [
-    {
-      "@odata.type": "#Microsoft.Azure.Search.CustomAnalyzer",
-      "name": "english_search_analyzer",
-      "tokenizer": "english_search",
-      "tokenFilters": [
-        "lowercase"
-      ],
-      "charFilters": ["form_suffix"]
-    },
-    {
-      "@odata.type": "#Microsoft.Azure.Search.CustomAnalyzer",
-      "name": "english_indexing_analyzer",
-      "tokenizer": "english_indexing",
-      "tokenFilters": [
-        "lowercase"
-      ],
-      "charFilters": ["form_suffix"]
-    }
-  ],
-  "tokenizers": [
-    {
-      "@odata.type": "#Microsoft.Azure.Search.MicrosoftLanguageStemmingTokenizer",
-      "name": "english_indexing",
-      "language": "english",
-      "isSearchTokenizer": False
-    },
-    {
-      "@odata.type": "#Microsoft.Azure.Search.MicrosoftLanguageStemmingTokenizer",
-      "name": "english_search",
-      "language": "english",
-      "isSearchTokenizer": False
-    }
-  ],
-  "tokenFilters": [],
-  "charFilters": [
-     {
-       "name":"form_suffix",
-       "@odata.type":"#Microsoft.Azure.Search.PatternReplaceCharFilter",
-       "pattern":"([0-9]{4})-([A-Z]*)",
-       "replacement":"$1$2"
-     }
-  ]
-}
-
-
-def getServiceUrl():
-    return 'https://' + serviceName + '.search.windows.net'
-
-def getMethod(servicePath):
-    headers = {'Content-type': 'application/json', 'api-key': apiKey}
-    r = requests.get(getServiceUrl() + servicePath, headers=headers)
-    print(r.text)
-
-def postMethod(servicePath, body):
-    headers = {'Content-type': 'application/json', 'api-key': apiKey}
-    r = requests.post(getServiceUrl() + servicePath, headers=headers, data=body)
-    #print(r, r.text)
-    return r
-
-def createSampleIndex():
-    indexDefinition = json.dumps(getSampleIndexDefinition())
-    servicePath = '/indexes/?api-version=%s' % apiVersion
-    r = postMethod(servicePath, indexDefinition)
-    #print r.text
-    if r.status_code == 201:
-       print('Sample index created.')
-    else:
-       print('Sample index creation failed.')
-       exit(1)
-
-def getSampleIndex():
-    #servicePath = '/indexers/%s?api-version=%s' % (indexName, apiVersion)
-    servicePath = '/indexers/?api-version=%s' % (apiVersion)
-    getMethod(servicePath)
-
-def uploadSampleDocument():
-    documents = json.dumps(getSampleDocumentObject())
+# Upload content for indexing in one request if content is not too large
+def uploadDocuments():
+    documents = json.dumps(getDocumentObject())
     servicePath = '/indexes/' + indexName + '/docs/index?api-version=' + apiVersion
     r = postMethod(servicePath, documents)
     if r.status_code == 200:
-        print('Success: %s' % r)
+        print('Success: %s' % r)   
     else:
         print('Failure: %s' % r.text)
+        exit(1)
 
-def uploadSampleDocumentInChunks(chunksize):
+# Upload content for indexing in chunks if content is too large for one request
+def uploadDocumentsInChunks(chunksize):
     records = pe.iget_records(file_name=inputfile)
     cnt  = 0
     for row in records:
         cnt += 1
-    #chunksize = 50
-    #for chunk in [65, 68, 72]:   # these chunks of size 50 fail to load
+
     for chunk in range(cnt/chunksize + 1):
         print('Processing chunk number %d ...' % chunk)
         start = chunk * chunksize
         end   = start + chunksize
-        documents = json.dumps(getSampleDocumentObjectByChunk(start, end))
+        documents = json.dumps(getDocumentObjectByChunk(start, end))
         servicePath = '/indexes/' + indexName + '/docs/index?api-version=' + apiVersion
         r = postMethod(servicePath, documents)
         if r.status_code == 200:
-            print('Success: %s' % r)
+            print('Success: %s' % r)   
         else:
             print('Failure: %s' % r.text)
+    return
 
-def uploadSampleDocumentOneByOne():
+# Upload content for indexing one document at a time
+def uploadDocumentsOneByOne():
     records = pe.iget_records(file_name=inputfile)
     valarry = []
     for i, row in enumerate(records):
         outdict = {}
         outdict['@search.action'] = 'upload'
 
-        if (row['Title']):
-            outdict['Index']           = str(row['Index'])
-            outdict['File']            = row['File']
-            outdict['Chapter']         = row['Chapter']
-            outdict['Title']           = row['Title']
-            outdict['SectionTitle']    = row['SectionTitle']
-            outdict['SubsectionTitle'] = row['SubsectionTitle']
-            outdict['Source']          = row['Source']
-            outdict['FeatureType']     = row['FeatureType']
-            outdict['ParaText']        = row['ParaText']
-            outdict['Keywords']        = row['Keywords']
+        if (row[fields_map[0][0]]):
+            outdict['Index'] = str(row['Index'])
+            for (in_fld, out_fld) in fields_map:
+                outdict[out_fld]  = row[in_fld]
             valarry.append(outdict)
 
         documents = json.dumps({'value' : valarry})
         servicePath = '/indexes/' + indexName + '/docs/index?api-version=' + apiVersion
         r = postMethod(servicePath, documents)
         if r.status_code == 200:
-            print('%d Success: %s' % (i,r))
+            print('%d Success: %s' % (i,r))   
         else:
             print('%d Failure: %s' % (i, r.text))
+            exit(1)
 
 def printDocumentCount():
-    servicePath = '/indexes/' + indexName + '/docs/$count?api-version=' + apiVersion
+    servicePath = '/indexes/' + indexName + '/docs/$count?api-version=' + apiVersion   
     getMethod(servicePath)
 
-def sampleQuery(query):
-    servicePath = '/indexes/' + indexName + '/docs?search=%s&api-version=%s' % \
-        (query, apiVersion)
+def sampleQuery(query, ntop=3):
+    servicePath = '/indexes/' + indexName + '/docs?api-version=%s&search=%s&$top=%d' % \
+        (apiVersion, query, ntop)
     getMethod(servicePath)
-
 
 if __name__ == '__main__':
-    # createSampleIndex()
-    # getSampleIndex()
-    # uploadSampleDocument()
-    uploadSampleDocumentInChunks(50)
-    # uploadSampleDocumentOneByOne()
+    # Create index if it does not exist
+    if not getIndex():
+        createIndex()    
+    else:
+        ans = raw_input('Index %s already exists ... Do you want to delete it? [Y/n]' % indexName)
+        if ans.lower() == 'y':
+            deleteIndex()
+            print('Re-creating index %s ...' % indexName)
+            createIndex()
+        else:
+            print('Index %s is not deleted ... New content will be added to existing index' % indexName)
+
+    #getIndex()
+    #uploadDocuments()
+    uploadDocumentsInChunks(50)
+    #uploadDocumentsOneByOne()
     printDocumentCount()
-    # sampleQuery('child tax credit')
+    sampleQuery('child tax credit')

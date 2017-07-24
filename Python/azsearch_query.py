@@ -11,23 +11,25 @@ See Azure Search REST API docs for more info:
 
 import requests
 import json
-import csv
-import datetime
-import pytz
-import calendar
 import os
 
-# Index gets created
-#indexName = 'mh-eyfulltaxidxer'  # index of all 51 chapters, fixed H3 sub-subsections
-indexName = 'mh-eytaxidxer'      # index of chapters 5-12, keywords + paratext + titles, fixed H3
-
 # This is the service you've already created in Azure Portal
-serviceName = 'eyazuresearch2017'
+serviceName = 'your_azure_search_service_name'
 
-# Other globals
+# This is the index you've already created in Azure Portal or via the azsearch_mgmt.py script
+indexName = 'your_index_name_to_use'
+
+# Set your service API key, either via an environment variable or enter it below
 #apiKey = os.getenv('SEARCH_KEY_DEV', '')
-apiKey = '8F36AE0F57D714CDDEC62EC79C6D5FF1'
+apiKey = 'your_azure_search_service_api_key'
 apiVersion = '2016-09-01'
+
+# Retrieval options to alter the query results
+SEARCHFIELDS = None                            # use all searchable fields for retrieval
+#SEARCHFIELDS = 'Keywords, SubsectionText'     # use selected fields only for retrieval
+FUZZY = False                                  # enable fuzzy search (check API for details)
+NTOP  = 5                                      # uumber of results to return
+
 
 def getServiceUrl():
     return 'https://' + serviceName + '.search.windows.net'
@@ -49,22 +51,28 @@ def submitQuery(query, fields=None, ntop=10):
         (apiVersion, query, ntop)
     if fields != None:
         servicePath += '&searchFields=%s' % fields
+    if FUZZY:
+        servicePath += '&queryType=full'
     r = getMethod(servicePath)
     if r.status_code != 200:
         print('Failed to retrieve search results')
         print(r, r.text)
         return
     docs = json.loads(r.text)['value']
-    print('Number of search results = %d' % len(docs))
+    print('Number of search results = %d\n' % len(docs))
     for i, doc in enumerate(docs):
-        print('Result# %d (%s)' % (i+1, doc['Chapter']))
-        print('%s\n' % doc['ParaText'].encode('utf8'))
+        print('Results# %d' % (i+1))
+        print('Chapter title   : %s' % doc['ChapterTitle'].encode('utf8'))
+        print('Section title   : %s' % doc['SectionTitle'].encode('utf8'))
+        print('Subsection title: %s' % doc['SubsectionTitle'].encode('utf8'))
+        print('%s\n' % doc['SubsectionText'].encode('utf8'))
 
 
-#######################################################
-# Retrieve Azure Search documents for interactive query
-# Fields: Index	File	Chapter	Title	SectionTitle	SubsectionTitle	Source	FeatureType	ParaText	Keywords
-#######################################################
+#####################################################################
+# Azure Search interactive query - command-line interface
+# Retrieve Azure Search documents via an interactive query
+# Fields: Index	File	ChapterTitle	SectionTitle	SubsectionTitle		SubsectionText	Keywords
+#####################################################################
 if __name__ == '__main__':
     while True:
         print
@@ -75,5 +83,5 @@ if __name__ == '__main__':
 
         # Submit query to Azure Search and retrieve results
         #searchFields = None
-        searchFields = 'Keywords, ParaText'
-        submitQuery(query, fields=searchFields, ntop=3)
+        searchFields = SEARCHFIELDS
+        submitQuery(query, fields=searchFields, ntop=NTOP)
