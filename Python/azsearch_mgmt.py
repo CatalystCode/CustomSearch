@@ -16,6 +16,8 @@ Run this script in the 'code' directory:
 See Azure Search REST API docs for more info:
     https://docs.microsoft.com/en-us/rest/api/searchservice/index
 
+Depedencies: This script requires pyexcel, pyexcel-xls and pyexcel-xlsx
+To install dependencies: pip install pyexcel pyexcel-xls pyexcel-xlsx
 """
 
 import requests
@@ -92,7 +94,7 @@ def createIndex():
     indexDefinition = json.dumps(getIndexDefinition())  
     servicePath = '/indexes/?api-version=%s' % apiVersion
     r = postMethod(servicePath, indexDefinition)
-    #print r.text
+    #print(r.text)
     if r.status_code == 201:
        print('Index %s created' % indexName)   
     else:
@@ -211,12 +213,19 @@ def sampleQuery(query, ntop=3):
         (apiVersion, query, ntop)
     getMethod(servicePath)
 
+# Python 2.x/3.x incompatibility of input() and raw_input()
+# Bind input() to raw_input() in Python 2.x, leave as-is in Python 3.x
+try:
+   input = raw_input
+except NameError:
+   pass
+
 if __name__ == '__main__':
     # Create index if it does not exist
     if not getIndex():
         createIndex()    
     else:
-        ans = raw_input('Index %s already exists ... Do you want to delete it? [Y/n]' % indexName)
+        ans = input('Index %s already exists ... Do you want to delete it? [Y/n]' % indexName)
         if ans.lower() == 'y':
             deleteIndex()
             print('Re-creating index %s ...' % indexName)

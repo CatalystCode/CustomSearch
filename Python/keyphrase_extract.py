@@ -5,6 +5,8 @@
 # Note: A copy of rake.py and SmartStoplist.txt stopwords list is included with this script
 # For more info about the PKE implementations, see https://github.com/boudinfl/pke
 # Note: Install PKE from the GitHub repo https://github.com/boudinfl/pke
+#
+# Incoptibility alert: PKE only works in Python 2.x at the moment. For Python 3.x, use RAKE.
 ###########################################################################################
 
 # Import base packages
@@ -106,8 +108,8 @@ def get_keyphrases_pke(infile, mode='topic', stoplist_path=None, postags=None, n
             phrases = []
 
     else:   # invalid mode
-        print "Invalid keyphrase extraction algorithm: %s" % mode
-        print "Valid PKE algorithms: [topic, single, kpminer, tfidf]"
+        print("Invalid keyphrase extraction algorithm: %s" % mode)
+        print("Valid PKE algorithms: [topic, single, kpminer, tfidf]")
         exit(1)
 
     phrases = extractor.get_n_best(ntop, redundancy_removal=True)
@@ -131,7 +133,7 @@ infile = sys.argv[1]
 if len(sys.argv) >= 3:
     algo = sys.argv[2]
     if algo not in ['rake', 'topic', 'single', 'tfidf', 'kpminer']:
-        print "Invalid keyphrase extraction algorithm: %s" % algo
+        print("Invalid keyphrase extraction algorithm: %s" % algo)
         usage()
         exit(1)
 else:
@@ -153,9 +155,9 @@ else:
     phrases = get_keyphrases_pke(infile, mode=algo, stoplist_path=stoplist_file, postags=postags, ntop=ntop)
 
 # Report all keyphrases and their scores
-print 'Number of extracted keyphrases = %d' % len(phrases)
+print('Number of extracted keyphrases = %d' % len(phrases))
 for phrase in phrases:
-    print phrase
+    print(phrase)
 
 # Combined list of keyphrases (no scores)
 all_phrases = ', '.join(p[0] for p in phrases)

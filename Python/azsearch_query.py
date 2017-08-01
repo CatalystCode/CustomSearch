@@ -67,6 +67,12 @@ def submitQuery(query, fields=None, ntop=10):
         print('Subsection title: %s' % doc['SubsectionTitle'].encode('utf8'))
         print('%s\n' % doc['SubsectionText'].encode('utf8'))
 
+# Python 2.x/3.x incompatibility of input() and raw_input()
+# Bind input() to raw_input() in Python 2.x, leave as-is in Python 3.x
+try:
+   input = raw_input
+except NameError:
+   pass
 
 #####################################################################
 # Azure Search interactive query - command-line interface
@@ -75,9 +81,9 @@ def submitQuery(query, fields=None, ntop=10):
 #####################################################################
 if __name__ == '__main__':
     while True:
-        print
-        print "Hit enter with no input to quit."
-        query = raw_input("Query: ")
+        print()
+        print("Hit enter with no input to quit.")
+        query = input("Query: ")
         if query == '':
             exit(0)
 
