@@ -10,11 +10,11 @@ Despite the sophistication of consumer search engine development and the promise
 
 In this project, we addressed the challenge of creating a custom domain experience. We leveraged Azure Search and Cognitive Services and we share our custom code for iterative testing, measurement and indexer redeployment. In our solution, the customized search engine will form the foundation for delivering a question and answer experience in a specific domain area. Below, we give you guidelines on designing your own custom search experience, followed by a step-by-step description of our work on this particular project with code and data that you can use to learn from and modify our approach for your in projects. In future posts, we’ll discuss the presentation layer as well as the work of integrating a custom Azure Search experience and Cognitive Services into a bot presentation experience.
 
-##Designing a Custom Search Experience
+## Designing a Custom Search Experience
 Before we describe the solution for our project, we outline search design considerations. These design considerations will help you create an enterprise search experience that rivals the best consumer search engines.
 The first step is to understand the custom search lifecycle, which involves designing the search experience, collecting and processing content, preparing the content for serving, serving and monitoring, and finally collecting feedback. Designing in continuous measurement and improvement is essential to developing and optimizing your search experience.
 
-###Determine Your Target User and Intent
+### Determine Your Target User and Intent
 Defining youget user allows you to characterize the experience that they need and the query language that they will use. For example, if your target ur tarser is a domain expert, their query terminology reflects this expertise. On the other hand, if your target user is not familiar with the domain area covered, their queries won't include expert vocabulary.
 
 Characterizing the intents of your target users guide your experience design and content strategy. In Web search engines, for instance, the user intent falls into one of three categories:
@@ -24,7 +24,7 @@ Characterizing the intents of your target users guide your experience design and
 
 Beyond these three categories, user intent may be further categorized into more specific sub-intents, especially for transactional and informational queries. Clarifying your user intents is foundational to serving the most relevant content in the clearest form. If possible, obtain a set of potential queries and characterize them by user intent.
 
-###Consider the End-to-End Design
+### Consider the End-to-End Design
 A good custom search design encompasses the end-to-end experience. Answering these ten key questions will give you a high-level set of requirements for your end-to-end custom search design.
 1.	Which user intents or sub-intents will be supported?
 2.	Is the content available to answer the user queries? Is there any data acquisition or collection that is required to assemble the necessary pieces of content?
@@ -37,15 +37,15 @@ A good custom search design encompasses the end-to-end experience. Answering the
 9.	What are the success metrics? Are they objective, subjective or both? How will they be computed?
 10.	How do you compare alternative experiences? Will you run A/B testing or other testing protocol? How will you decide which experience is better in the potential situation of conflicting metrics?
 
-###Characterize the Query and Consumption Interface and Experience
+### Characterize the Query and Consumption Interface and Experience
 Once you have planned for the end-to-end experience, outline the content servicing and consumption experience. As you consider the query and results serving page layout, consider how many results you will need to deliver. The number of results you can serve is often a function of the screen size of the device where you are serving the experience, the character of the answers you are delivering, and the requirements of your target audience. It's key to think through delivering them in a consistent, visually and cognitively appealing layout.
 
-###Define Success Measures and Feedback
+### Define Success Measures and Feedback
 Define your desired objective success metrics. Is success displaying the best answer in the top five responses, the top three responses, or just in the top one response? The success measures will be used in the optimization of the search experience, as well as for ongoing management. Consider measures you will need to optimize for launch and for ongoing performance management. Consider your approach to experimentation. Will you support A/B testing and flighting experiences to test different ranking mechanisms or user experiences?
 
 Define how users will provide feedback on the quality of the answers or the quality of the experience. You may rely on implicit feedback from usage logs, for example, or explicit feedback the user provides based on the results served. Your UI affordances for explicit feedback might allow users to rate the usefulness of the specific result served, identify which result is the best, and rate the quality of the overall experience.
 
-##Our Project Solution
+## Our Project Solution
 A variety of services, tools, and platforms are available to assist in the content preparation and results serving, as well as in the online response to the incoming user queries. We reviewed the following services to identify which would serve the custom search experience requirements for our project.
 
 ⦁	Detection of user query intent/sub-intent via ⦁	Language Understanding Intelligent Service (LUIS) 
