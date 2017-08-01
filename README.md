@@ -48,11 +48,15 @@ Define how users will provide feedback on the quality of the answers or the qual
 ## Our Project Solution
 A variety of services, tools, and platforms are available to assist in the content preparation and results serving, as well as in the online response to the incoming user queries. We reviewed the following services to identify which would serve the custom search experience requirements for our project.
 
-⦁	Detection of user query intent/sub-intent via ⦁	Language Understanding Intelligent Service (LUIS) 
-⦁	Serving frequently asked questions via ⦁	QnA Maker API 
-⦁	Indexing and serving general search content via ⦁	Azure Search 
-⦁	Text analytics supporting tools, such as language detection, key phrase extraction, topic detection, sentiment analysis via ⦁	Text Analytics API 
-⦁	Other APIs supporting language, knowledge, speech, vision and more via ⦁	Microsoft Cognitive Services
+⦁	Detection of user query intent/sub-intent via Language Understanding Intelligent Service (LUIS) 
+
+⦁	Serving frequently asked questions via QnA Maker API 
+
+⦁	Indexing and serving general search content via Azure Search 
+
+⦁	Text analytics supporting tools, such as language detection, key phrase extraction, topic detection, sentiment analysis via Text Analytics API 
+
+⦁	Other APIs supporting language, knowledge, speech, vision and more via	Microsoft Cognitive Services
 
 Based on our content and target user requirements we identified Azure Search and the Language Understanding Intelligent Service as services we would use in our design.  
 
