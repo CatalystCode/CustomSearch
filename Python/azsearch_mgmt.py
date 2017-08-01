@@ -168,7 +168,7 @@ def uploadDocumentsInChunks(chunksize):
     for row in records:
         cnt += 1
 
-    for chunk in range(cnt/chunksize + 1):
+    for chunk in range(int(cnt/chunksize) + 1):
         print('Processing chunk number %d ...' % chunk)
         start = chunk * chunksize
         end   = start + chunksize
