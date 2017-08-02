@@ -1,22 +1,30 @@
 
-## Custom Search 
+### Custom Search 
 
 > Sample custom search project using azure search and the US Tax Code.
 
 > Python script that allows you to quickly and iteratively customize, improve and measure your custom search experience.
 
-# Scripts Included
+
+## Scripts Included
 * Upload and update search index in Azure Search
 * Query interactively to test results
 * Query on batch basis to analyze performance
-* Extract keywords to enhance search index metadata (python 2.7 only)
+* Extract keywords to enhance search index metadata (Python 2.7 only)
 
 
-## Guides
+## Getting Started
 
-### How to view a file<a name="file"></a>
+1. Read the code story here. Developing a Custom Search Engine for an Expert Chat System.
+2. Review the Azure Search service features.
+3. Get a free trial subscriptions to Azure Search.
+4. Copy your Azure Search name and Key.
+5. Run the azsearch_mgmt.py script, using your Azure Search name, key and index name of your choice.
 
 1. Open the appbar [`...`](#toggleAppBar) and select `Open File`
+2. __or__ open a .md/.markdown file from the filesystem
+3. __or__ copy a text, URL, file to the clipboard and switch back to Markdownr
+Open the appbar [`...`](#toggleAppBar) and select `Open File`
 2. __or__ open a .md/.markdown file from the filesystem
 3. __or__ copy a text, URL, file to the clipboard and switch back to Markdownr
 
