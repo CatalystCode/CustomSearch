@@ -1,5 +1,5 @@
 
-### Custom Search 
+# Custom Search 
 
 > Sample custom search project using azure search and the US Tax Code.
 
@@ -15,15 +15,15 @@
 
 ## Getting Started
 
-1. Read the real life code story here. Developing a Custom Search Engine for an Expert Chat System.
-2. Review the Azure Search service features.  https://azure.microsoft.com/en-us/services/search/
-3. Get a free trial subscriptions to Azure Search.  https://azure.microsoft.com/en-us/free/
+1. Read the [Real Life Code Story](https://www.microsoft.com/reallifecode/)], "[Developing a Custom Search Engine for an Expert Chat System.](https://www.microsoft.com/reallifecode/)]
+2. Review the [Azure Search service features.](https://azure.microsoft.com/en-us/services/search/)
+3. Get a [free trial subscriptions to Azure Search.](https://azure.microsoft.com/en-us/free/)
 4. Copy your Azure Search name and Key. 
 5. Review the sample search index input and enriched input in the sample folder to understand content.
 6. Run the azsearch_mgmt.py script, using your Azure Search name, key and index name of your choice to create a search index.
 7. Run the azsearch_query.py script to interactively query your new search index and see results.
 8. Run the azsearch_queryall.py script to batch query your new search index and evaluate the results.
 
-
+ Support for YAML [Front-Matter](http://jekyllrb.com/docs/frontmatter/)
 ## Description
 Querying specific content areas quickly and easily is a common enterprise need. Fast traversal of specialized publications, customer support knowledge bases or document repositories allows enterprises to deliver service efficiently and effectively. Simple FAQs don’t cover enough ground, and a string search isn’t effective or efficient for those not familiar with the domain or the document set. Instead, enterprises can deliver a custom search experience that saves their clients time and provides them better service through a question and answer format.  In this project, we leveraged Azure Search and Cognitive Services and we share our custom code for iterative testing, measurement and indexer redeployment. In our solution, the customized search engine will form the foundation for delivering a question and answer experience in a specific domain area.
