@@ -44,6 +44,15 @@ def clean_text(text, lowercase=False, nopunct=False):
     text = re.sub('\s+', ' ', text)
     return text.strip()
 
+# Load custom stoopwords list
+def load_stop_words(stoplist_path):
+    stop_words = []
+    for line in open(stoplist_path):
+        if line.strip()[0:1] != "#":
+            for word in line.split():
+                stop_words.append(word)
+    return stop_words
+
 # Extract keyphrases using RAKE algorithm. Limit results by minimum score.
 def get_keyphrases_rake(infile, stoplist_path=None, min_score=0):
     if stoplist_path == None:
@@ -60,10 +69,11 @@ def get_keyphrases_rake(infile, stoplist_path=None, min_score=0):
 
     return phrases
 
+# Extract keyphrases using various algorithms provided by PKE
 def get_keyphrases_pke(infile, mode='topic', stoplist_path=None, postags=None, ntop=100):
     if stoplist_path == None:
         stoplist_path = 'SmartStoplist.txt'
-    stoplist = [open(stoplist_path, 'r').read()]
+    stoplist = load_stop_words(stoplist_path)
 
     if postags == None:
         postags = ['NN', 'NNS', 'NNP', 'NNPS', 'JJ', 'JJR', 'JJS', 'VBN', 'VBD']
