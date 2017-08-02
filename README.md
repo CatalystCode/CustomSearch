@@ -21,10 +21,15 @@
 4. Copy your Azure Search name and Key. 
 5. Review the [sample](https://github.com/CatalystCode/CustomSearch/tree/master/sample)
  search index input and enriched input in the sample folder to understand content.
-6. Run the [azsearch_mgmt.py script](https://github.com/CatalystCode/CustomSearch/blob/master/Python/azsearch_mgmt.py), using your Azure Search name, key and index name of your choice to create a search index.
-7. Run the [azsearch_query.py script](https://github.com/CatalystCode/CustomSearch/blob/master/Python/azsearch_query.py) to interactively query your new search index and see results.
-8. Run the [azsearch_queryall.py script](https://github.com/CatalystCode/CustomSearch/blob/master/Python/azsearch_queryall.py) to batch query your new search index and evaluate the results.
-9. Run the [keyphrase_extract.py script](https://github.com/CatalystCode/CustomSearch/blob/master/Python/keyphrase_extract.py) to extract keyphrases to enrich the search index metadata.  Note this script is Python 2.7 only.
+6. Try the sample Jupyter notebooks under the folder JupyterNotebooks for an overview of the end-2-end content extraction, indexing and retrieval process.
+	* Step 1: Content and keyphrase extraction: [1-content_extraction.ipynb](https://github.com/CatalystCode/CustomSearch/blob/master/JupyterNotebooks/1-content_extraction.ipynb)
+	* Step 2: Index creation: [2-content_indexing.ipynb](https://github.com/CatalystCode/CustomSearch/blob/master/JupyterNotebooks/2-content_indexing.ipynb)
+	* Step 3: Interactive and batch search queries: [3-azure_search_query.ipynb](https://github.com/CatalystCode/CustomSearch/blob/master/JupyterNotebooks/3-azure_search_query.ipynb)
+7. A command-line version of the scripts is available under the Python folder.
+	* Run the [azsearch_mgmt.py script](https://github.com/CatalystCode/CustomSearch/blob/master/Python/azsearch_mgmt.py), using your Azure Search name, key and index name of your choice to create a search index.
+	* Run the [azsearch_query.py script](https://github.com/CatalystCode/CustomSearch/blob/master/Python/azsearch_query.py) to interactively query your new search index and see results.
+	* Run the [azsearch_queryall.py script](https://github.com/CatalystCode/CustomSearch/blob/master/Python/azsearch_queryall.py) to batch query your new search index and evaluate the results.
+	* Run the [keyphrase_extract.py script](https://github.com/CatalystCode/CustomSearch/blob/master/Python/keyphrase_extract.py) to experiment with various keyphrase extraction algorithms to enrich the search index metadata.  Note this script is Python 2.7 only.
 
  
 ## Description
