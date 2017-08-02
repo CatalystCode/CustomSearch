@@ -77,7 +77,7 @@ def submitQuery(query, fields=None, ntop=10, fuzzy=False):
 #############################################################################
 if __name__ == '__main__':
     # Dataframe to keep index of crawled pages
-    df = pd.DataFrame(columns = ['Qid', 'Query', 'Rank', 'SubsectionText', 'ChapterTitle', 'SectionTitle', 'SubsectionTitle', 'Keywords'], dtype=unicode)
+    df = pd.DataFrame(columns = ['Qid', 'Query', 'Rank', 'SubsectionText', 'ChapterTitle', 'SectionTitle', 'SubsectionTitle', 'Keywords'])
 
     if infile.endswith('.tsv') or infile.endswith('.txt'):
         records = pd.read_csv(infile, sep='\t', header=0, encoding='utf-8')
