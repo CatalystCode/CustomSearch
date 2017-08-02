@@ -1,4 +1,14 @@
-# Developing a Custom Search Experience 
+
+
+# Markdownr
+
+> A full-featured markdown viewer for Windows and Windows Phone.
+
+> Built for speed with the help of great Open-Source libraries.
+## Features
+* [GitHub Flavoured Markdown](https://help.github.com/articles/github-flavored-markdown/) including tables
+10
+* Extensive & fast [syntax highlighting](#syntax)# Developing a Custom Search Experience 
 
 ## The Challenge
 Querying specific content areas quickly and easily is a common enterprise need. Fast traversal of specialized publications, customer support knowledge bases or document repositories allows enterprises to deliver service efficiently and effectively. Simple FAQs don’t cover enough ground, and a string search isn’t effective or efficient for those not familiar with the domain or the document set. Instead, enterprises can deliver a custom search experience that saves their clients time and provides them better service through a question and answer format.
