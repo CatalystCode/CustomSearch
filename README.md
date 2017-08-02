@@ -16,7 +16,6 @@
 ## Getting Started
 
 1. Read the [Real Life Code Story](https://www.microsoft.com/reallifecode/), "[Developing a Custom Search Engine for an Expert Chat System.](https://www.microsoft.com/reallifecode/)"
-https://github.com/CatalystCode/CustomSearch/blob/master/Python/azsearch_queryall.py
 2. Review the [Azure Search service features](https://azure.microsoft.com/en-us/services/search/).
 3. Get a [free trial subscriptions to Azure Search.](https://azure.microsoft.com/en-us/free/)
 4. Copy your Azure Search name and Key. 
