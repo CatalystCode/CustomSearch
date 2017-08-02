@@ -1,0 +1,8 @@
+Qid	Query
+1	child tax credit
+2	what is the tax bracket for married couple filing separately
+3	definition of surviving spouse
+4	when should i submit my tax return
+5	my tenant paid for some repairs in my rental unit. is this taxable?
+6	what is the maximum allowed IRA limit
+7	are there any limitations on employer provided benefits?
