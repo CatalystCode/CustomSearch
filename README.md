@@ -1,10 +1,10 @@
 
+## Custom Search 
 
-# Markdownr
+> Sample custom search project using azure search and the US Tax Code.
 
-> A full-featured markdown viewer for Windows and Windows Phone.
+> Python script that allows you to quickly and iteratively customize, improve and measure your custom search experience.
 
-> Built for speed with the help of great Open-Source libraries.
 ## Features
 * [GitHub Flavoured Markdown](https://help.github.com/articles/github-flavored-markdown/) including tables
 10
