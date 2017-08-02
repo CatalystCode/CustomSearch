@@ -1,11 +1,13 @@
 ###########################################################################################
 # Keyphrase extractor example for experimentation
 # Supports algoriths: RAKE, topic rank, single rank, TFIDF and KPMINER
+#
 # For more info about RAKE algorithm and implmentation, see https://github.com/aneesha/RAKE
-# Note: A copy of rake.py and SmartStoplist.txt stopwords list is included with this script
+# Note: A copy of rake.py and SmartStoplist.txt stopwords list is included in the
+#       folder ../JupyterNotebooks. Copy rake.py and the stopwords list files to current folder.
+#
 # For more info about the PKE implementations, see https://github.com/boudinfl/pke
 # Note: Install PKE from the GitHub repo https://github.com/boudinfl/pke
-#
 # Incoptibility alert: PKE only works in Python 2.x at the moment. For Python 3.x, use RAKE.
 ###########################################################################################
 
