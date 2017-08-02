@@ -26,7 +26,7 @@ improve and measure your custom search experience.
 4. Copy your Azure Search name and Key. 
 5. Review the [sample](https://github.com/CatalystCode/CustomSearch/tree/master/sample)
  search index input and enriched input in the sample folder to understand content.
-6. Try the sample Jupyter notebooks or an overview of the end-2-end process for content extraction, augmentation with keyphrases, indexing and retrieval.
+6. Try the sample Jupyter notebooks for an overview of the end-2-end process for content extraction, augmentation with keyphrases, indexing and retrieval.
 	* Step 1: Content and keyphrase extraction: [1-content_extraction.ipynb](https://github.com/CatalystCode/CustomSearch/blob/master/JupyterNotebooks/1-content_extraction.ipynb)
 	* Step 2: Index creation: [2-content_indexing.ipynb](https://github.com/CatalystCode/CustomSearch/blob/master/JupyterNotebooks/2-content_indexing.ipynb)
 	* Step 3: Interactive and batch search queries: [3-azure_search_query.ipynb](https://github.com/CatalystCode/CustomSearch/blob/master/JupyterNotebooks/3-azure_search_query.ipynb)
