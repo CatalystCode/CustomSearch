@@ -44,7 +44,7 @@ def clean_text(text, lowercase=False, nopunct=False):
     text = re.sub('\s+', ' ', text)
     return text.strip()
 
-# Load custom stoopwords list
+# Load custom stopwords list
 def load_stop_words(stoplist_path):
     stop_words = []
     for line in open(stoplist_path):
