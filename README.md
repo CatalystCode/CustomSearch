@@ -1,9 +1,10 @@
 
 # Custom Search 
 
-> Sample custom search project using azure search and the US Tax Code.
+> Sample custom search project using Azure Search and the US Tax Code.
 
-> Python script that allows you to quickly and iteratively customize, improve and measure your custom search experience.
+> Python scripts and Jupyter notebooks that allow you to quickly and iteratively customize, 
+improve and measure your custom search experience.
 
 
 ## Custom Search Service Development Features in the Python Scripts 
@@ -12,6 +13,10 @@
 * Query on batch basis to analyze performance
 * Extract keyphrases to enhance search index metadata 
 
+## End-to-End Example Provided in Jupyter Notebooks
+* Collect, pre-process, and augment content with keyphrases
+* Create an Azure Search index
+* Query the index and retrieve results interactively and/or in batch
 
 ## Getting Started
 
